@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Part 1</title>
+
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+
+    <style>
+        .red {color: red;
+            font-size: 16px;
+            font-weight: 700;}
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const myNews = [
+            {
+                id: 1,
+                author: 'Саша Печкин',
+                text: 'В четверг, четвертого числа...'
+            },
+            {
+                id: 2,
+                author: 'Просто Вася',
+                text: 'Считаю, что $ должен стоить 35 рублей!'
+            },
+            {
+                id: 3,
+                author: 'Max Frontend',
+                text: 'Прошло 2 года с прошлых учебников, а $ так и не стоит 35'
+            },
+            {
+                id: 4,
+                author: 'Гость22',
+                text: 'Бесплатно. Без смс, про реакт, заходи - https://maxpfrontend.ru'
+            }
+        ];
+        class News extends React.Component {
+            render() {
+                let newsTemplate = this.props.data.map(function(item, index) {
+                    return (
+                        <div key={item.id}>
+                            <p className="news__author">{item.author}:</p>
+                            <p className="news__text">{item.text}</p>
+                        </div>
+                    )
+                });
+
+                return (
+                    <div className="news">
+                        {newsTemplate}
+                        <strong>всего новостей {this.props.data.length}</strong>
+                    </div>
+                )
+            }
+        }
+
+        const Comments = () => {
+            return <p>now Comments yeat</p>
+        };
+        const App = () => {
+            return (
+                <React.Fragment>
+                    <News data={myNews}/>   {/* добавили свойство data */} {/*коментарий в JSX */}
+
+
+                    <Comments />
+                </React.Fragment>
+                )
+        };
+
+        ReactDOM.render(
+            <App />,
+            document.getElementById('root')
+        );
+
+
+
+    </script>
+
+
+
+</body>
+</html>
