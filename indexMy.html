@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8" />
-    <title>Part 1</title>
+    <title>Part 1 My CODE</title>
     <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/prop-types@15.6/prop-types.js"></script>
@@ -13,7 +13,7 @@
             display: none;
         }
         body {
-            background: rgba(0, 102, 255, 0.38);
+            background: rgb(118, 192, 255);
             font-family: sans-serif;
         }
         p {
@@ -24,12 +24,11 @@
             border: 1px solid rgba(0, 89, 181, 0.82);
             width: 600px;
             margin: 0 0 5px;
-            box-shadow: 2px 2px 5px -1px rgb(0, 81, 202);
             padding: 3px 5px;
         }
         .news__author {
             text-decoration: underline;
-            color: #007DDC;
+            color: #ffab2e;
         }
         .news__count {
             margin: 10px 0 0 0;
@@ -66,13 +65,14 @@
             bigText: 'Еще есть группа VK, telegram и канал на youtube! Вся инфа на сайте, не реклама!'
         }
     ];
+
     class Article extends React.Component {
-        render() {
-            const { author, text } = this.props.data
+        render(){
+            const {author, text} = this.props.data;
             return (
                 <div className="article">
                     <p className="news__author">{author}:</p>
-                    <p className="news__text">{text}</p>
+                    <p className="news__text">{text}:</p>
                 </div>
             )
         }
@@ -83,37 +83,40 @@
             text: PropTypes.string.isRequired
         })
     }
+
+
     class News extends React.Component {
         renderNews = () => {
-            const { data } = this.props
-            let newsTemplate = null
-
-            if (data.length) {
-                newsTemplate = data.map(function(item) {
-                    return <Article key={item.id} data={item}/>
+            const {data} = this.props;
+            let newsTempalate = null;
+            if(data.length){ // если новость есть, пробегись мэпом
+                newsTempalate = data.map(function (item) {
+                    return <Article key={item.id} data={item} />
                 })
-            } else {
-                newsTemplate = <p>К сожалению новостей нет</p>
+            } else { // елси новостей нет сохрани в переменную параграф
+                newsTempalate = <p> no new yet </p>
             }
+            return newsTempalate;
+        };
 
-            return newsTemplate
-        }
-        render() {
-            const { data } = this.props
+        render(){
+            const {data} = this.props; // аналоогично записи const data = this.props.data - деструкторизация объекта ES6 !!
+            console.log(333, data.length); //4
 
-            return (
+            return(
                 <div className="news">
-                    {this.renderNews()}
-                    {
-                        data.length ? <strong className={'news__count'}>Всего новостей: {data.length}</strong> : null
-                    }
+                    { this.renderNews() }
+                    {data.length > 0 ? <strong>Всего новостей: {data.length}</strong> : null }
+
                 </div>
-            );
+            )
         }
     }
+
     News.propTypes = {
-        data: PropTypes.array.isRequired
+        data: PropTypes.array.isRequired // PropTypes с большой буквы т.к это библиотека
     }
+
     const App = () => {
         return (
             <React.Fragment>
@@ -121,7 +124,8 @@
                 <News data={myNews}/>
             </React.Fragment>
         )
-    }
+    };
+
     ReactDOM.render(
         <App />,
         document.getElementById('root')
