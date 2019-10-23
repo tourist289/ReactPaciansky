@@ -77,6 +77,9 @@
         render(){
             const {author, text, bigText} = this.props.data;
             const {visible} = this.state;
+
+            console.log('render')
+
             return (
                 <div className="article">
                     <p className="news__author">{author}:</p>
@@ -102,6 +105,15 @@
 
 
     class News extends React.Component {
+        state = {
+            counter: 0
+        }
+        handleCounter = (e) => {
+
+            // e.preventDefault()
+            let i = this.state.counter;
+            this.setState({counter: ++i})
+        }
         renderNews = () => {
             const {data} = this.props;
             let newsTempalate = null;
@@ -117,13 +129,13 @@
 
         render(){
             const {data} = this.props; // аналоогично записи const data = this.props.data - деструкторизация объекта ES6 !!
-            console.log(333, data.length); //4
+            const {counter} = this.state;
 
             return(
                 <div className="news">
                     { this.renderNews() }
-                    {data.length > 0 ? <strong>Всего новостей: {data.length}</strong> : null }
-
+                    {data.length > 0 ? <strong onClick={this.handleCounter}>Всего новостей: {data.length}</strong> : null }
+                    {<span className="clickCounter">Всего clicks: {counter}</span>}
                 </div>
             )
         }
