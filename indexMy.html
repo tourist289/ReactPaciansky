@@ -145,10 +145,37 @@
         data: PropTypes.array.isRequired // PropTypes с большой буквы т.к это библиотека
     }
 
+    class TestInput extends React.Component {
+        state = {
+            myValue: ''
+        }
+        onChangeHandler = (e) => {
+            this.setState({myValue: e.currentTarget.value})
+        }
+        onClickHandler = () => {
+            alert(this.state.myValue)
+        }
+        render(){
+            return(
+                <React.Fragment>
+                    <input className="test-input"
+                           value={this.state.myValue}
+                           onChange={this.onChangeHandler}
+                           placeholder="enter some value"/>
+                    <button onClick={this.onClickHandler}>click me</button>
+                </React.Fragment>
+
+
+            )
+        }
+
+    }
+
     const App = () => {
         return (
             <React.Fragment>
                 <h3>Новости</h3>
+                <TestInput/>
                 <News data={myNews}/>
             </React.Fragment>
         )
