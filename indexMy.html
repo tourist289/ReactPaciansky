@@ -8,33 +8,7 @@
     <script src="https://unpkg.com/prop-types@15.6/prop-types.js"></script>
     <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
 
-    <style>
-        .none {
-            display: none;
-        }
-        body {
-            background: rgb(118, 192, 255);
-            font-family: sans-serif;
-        }
-        p {
-            margin: 0 0 5px;
-        }
-        .article {
-            background: #FFF;
-            border: 1px solid rgba(0, 89, 181, 0.82);
-            width: 600px;
-            margin: 0 0 5px;
-            padding: 3px 5px;
-        }
-        .news__author {
-            text-decoration: underline;
-            color: #ffab2e;
-        }
-        .news__count {
-            margin: 10px 0 0 0;
-            display: block;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/app.css">
 </head>
 <body>
 <div id="root"></div>
@@ -145,37 +119,79 @@
         data: PropTypes.array.isRequired // PropTypes с большой буквы т.к это библиотека
     }
 
-    class TestInput extends React.Component {
+     /* вариант для Uncontrolled Component
+1. Удалим обработчик onChange
+2. Удалим state
+3. Укажем defaultValue = пустая строка ( defaultValue='' ) вместо value
+4. В constructor методе компонента (оп-па) укажем this.input = React.createRef();
+5. Добавим атрибут ref инпуту, равный this.input (который в конструкторе создали)
+       * */
+    class Add extends React.Component {
         state = {
-            myValue: ''
+            checkVal: false,
+            inputVal: "",
+            textareaVal: ""
         }
-        onChangeHandler = (e) => {
-            this.setState({myValue: e.currentTarget.value})
+        onInputChange = (e) => { // обработчик, в котором обновляем name
+            this.setState ({inputVal: e.currentTarget.value})
         }
-        onClickHandler = () => {
-            alert(this.state.myValue)
+        onTextChange = (e) => { //обработчик, в котором обновляем text
+            this.setState({textareaVal: e.currentTarget.value})
         }
+        handleCheckChange = (e) => { //обработчик, в котором обновляем checkbox
+            this.setState({checkVal: e.currentTarget.checked})
+        }
+        onClickHandler = (e) => {
+            e.preventDefault();
+            let {inputVal : name , textareaVal: message } = this.state;
+            alert( `hello my name is ${name} i want to show you something look ${message}`)
+
+        }
+        validate = () => {
+            let {inputVal: name , textareaVal: message, checkVal: agree} = this.state;
+            if(name.trim() && message.trim() && agree){
+                return true
+            }
+            return false
+        }
+
+
         render(){
+            const { inputVal, textareaVal, checkVal } = this.state // вытащили значения из стейта
+
             return(
-                <React.Fragment>
-                    <input className="test-input"
-                           value={this.state.myValue}
-                           onChange={this.onChangeHandler}
-                           placeholder="enter some value"/>
-                    <button onClick={this.onClickHandler}>click me</button>
-                </React.Fragment>
+                <form className="add">
+                    <input type="text"
+                       onChange={this.onInputChange}
+                        className="add__author"
+                        placeholder="your name"
+                       value={inputVal}
+                    />
+                    <textarea
+                        onChange={this.onTextChange}
+                        className="add__text"
+                        placeholder="new text"
+                        value={textareaVal}
+                    >
 
-
+                    </textarea>
+                    <label className="add__checkrule">
+                        <input onChange={this.handleCheckChange}  type="checkbox"/> i agree with rules
+                    </label>
+                    <button className="add__btn"
+                        onClick={this.onClickHandler}
+                        disabled={!this.validate()} //
+                    >Show news</button>
+                </form>
             )
         }
-
     }
 
     const App = () => {
         return (
             <React.Fragment>
-                <h3>Новости</h3>
-                <TestInput/>
+                <Add />
+                <h3>Новости</h3>q
                 <News data={myNews}/>
             </React.Fragment>
         )
