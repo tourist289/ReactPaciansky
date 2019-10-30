@@ -49,13 +49,13 @@
             this.setState({visible: true})
         }
         render(){
-            const {author, text, bigText} = this.props.data;
+            const {author, text, bigText, id} = this.props.data;
             const {visible} = this.state;
 
             console.log('render')
 
             return (
-                <div className="article">
+                <div className="article" key={id}>
                     <p className="news__author">{author}:</p>
                     <p className="news__text">{text}:</p>
                     { /*если НЕ висибл  то показывай */
@@ -71,6 +71,7 @@
     }
     Article.propTypes = {
         data: PropTypes.shape({
+            id: PropTypes.number.isRequired,
             author: PropTypes.string.isRequired,
             text: PropTypes.string.isRequired,
             bigText: PropTypes.string.isRequired
@@ -79,15 +80,6 @@
 
 
     class News extends React.Component {
-        state = {
-            counter: 0
-        }
-        handleCounter = (e) => {
-
-            // e.preventDefault()
-            let i = this.state.counter;
-            this.setState({counter: ++i})
-        }
         renderNews = () => {
             const {data} = this.props;
             let newsTempalate = null;
@@ -95,7 +87,7 @@
                 newsTempalate = data.map(function (item) {
                     return <Article key={item.id} data={item} />
                 })
-            } else { // елси новостей нет сохрани в переменную параграф
+            } else { // if новостей нет сохрани в переменную параграф
                 newsTempalate = <p> no new yet </p>
             }
             return newsTempalate;
@@ -103,13 +95,11 @@
 
         render(){
             const {data} = this.props; // аналоогично записи const data = this.props.data - деструкторизация объекта ES6 !!
-            const {counter} = this.state;
 
             return(
                 <div className="news">
                     { this.renderNews() }
                     {data.length > 0 ? <strong onClick={this.handleCounter}>Всего новостей: {data.length}</strong> : null }
-                    {<span className="clickCounter">Всего clicks: {counter}</span>}
                 </div>
             )
         }
@@ -130,7 +120,9 @@
         state = {
             checkVal: false,
             inputVal: "",
-            textareaVal: ""
+            textareaVal: "",
+            bigText: "",
+            id: this.props.keyid
         }
         onInputChange = (e) => { // обработчик, в котором обновляем name
             this.setState ({inputVal: e.currentTarget.value})
@@ -138,13 +130,18 @@
         onTextChange = (e) => { //обработчик, в котором обновляем text
             this.setState({textareaVal: e.currentTarget.value})
         }
+        onBIGTextChange = (e) => { //обработчик, в котором обновляем text
+            this.setState({ bigText: e.currentTarget.value})
+        }
         handleCheckChange = (e) => { //обработчик, в котором обновляем checkbox
             this.setState({checkVal: e.currentTarget.checked})
         }
         onClickHandler = (e) => {
             e.preventDefault();
-            let {inputVal : name , textareaVal: message } = this.state;
-            alert( `hello my name is ${name} i want to show you something look ${message}`)
+            let {inputVal : author , bigText: bigText, textareaVal  } = this.state;
+            let id = this.state.id;
+
+           this.props.onAddNews({author, bigText, textareaVal, id});
 
         }
         validate = () => {
@@ -157,10 +154,10 @@
 
 
         render(){
-            const { inputVal, textareaVal, checkVal } = this.state // вытащили значения из стейта
+            const { inputVal, textareaVal, bigText, checkVal } = this.state; // вытащили значения из стейта
 
             return(
-                <form className="add">
+                <form className="add" >
                     <input type="text"
                        onChange={this.onInputChange}
                         className="add__author"
@@ -172,6 +169,14 @@
                         className="add__text"
                         placeholder="new text"
                         value={textareaVal}
+                    >
+
+                    </textarea>
+                    <textarea
+                        onChange={this.onBIGTextChange}
+                        className="add__big-text"
+                        placeholder="new BIG >> text"
+                        value={bigText}
                     >
 
                     </textarea>
@@ -187,15 +192,29 @@
         }
     }
 
-    const App = () => {
-        return (
-            <React.Fragment>
-                <Add />
-                <h3>Новости</h3>q
-                <News data={myNews}/>
-            </React.Fragment>
-        )
+    Add.propTypes = {
+        onAddNews: PropTypes.func.isRequired
     };
+
+    class App extends React.Component {
+        state = {
+            news: myNews,
+        };
+        handleAddNews = (data) => {
+            console.log('я вызвана из АДД, но имею доступ к this.state from App' , this.state);
+            const nextNews = [data, ...this.state.news ];
+            this.setState({news: nextNews })
+        };
+        render (){
+            return (
+            <React.Fragment>
+                <Add keyid={this.state.news.length + 1} onAddNews={this.handleAddNews}/>
+                <h3>Новости</h3>
+                <News data={this.state.news}/>
+            </React.Fragment>
+            )
+        }
+    }
 
     ReactDOM.render(
         <App />,
