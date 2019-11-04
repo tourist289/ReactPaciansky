@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Sidebar Ajax</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/prop-types@15.6/prop-types.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+
+    <link rel="stylesheet" href="./appSide.css">
+</head>
+<body>
+    <main>
+        <div class="container">
+            <aside id="aside">
+                <ul class="list__wrapper">
+                    <li class="item" data-href="lesson1">1111</li>
+                    <li class="item" data-href="lesson2">2222</li>
+                    <li class="item" data-href="lesson3">3333</li>
+
+                </ul>
+            </aside>
+            <div class="content">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iusto laborum laudantium vero. Blanditiis
+                    neque perferendis quas quia sed. A aperiam cum fuga laudantium minima officia pariatur? Amet dolore
+                    excepturi impedit ipsa iure molestias quidem sapiente unde. Obcaecati, quod, reprehenderit! Animi
+                    autem corporis ipsa molestiae necessitatibus nemo nihil nulla, pariatur rerum ullam! A adipisci
+                    consectetur cum eaque eligendi molestiae non quasi quis quisquam voluptate? Laudantium non, quam?
+                    Accusamus ad at deserunt dolorem eligendi, est eveniet expedita magni nihil non porro repudiandae
+                    voluptas. Aliquid aspernatur at dicta dignissimos doloribus dolorum eligendi esse et ex explicabo
+                    illo inventore itaque labore laudantium molestiae nisi nulla, omnis pariatur porro quasi qui
+                    reiciendis repellat reprehenderit sapiente sint, sit tempora tenetur vero voluptates voluptatibus!
+                    Ea, recusandae, vitae.</p>
+
+
+
+                <div id="root"></div>
+            </div>
+
+        </div>
+    </main>
+
+
+<script type="text/babel">
+    const myNews = [
+        {
+            id: 1,
+            author: 'Саша Печкин',
+            title: 'В четверг, четвертого числа...',
+            bigText: 'в четыре с четвертью часа четыре чёрненьких чумазеньких чертёнка чертили чёрными чернилами чертёж.'
+        },
+        {
+            id: 2,
+            author: 'Просто Вася',
+            title: 'Считаю, что $ должен стоить 35 рублей!',
+            bigText: 'А евро 42!'
+        },
+        {
+            id: 3,
+            author: 'Max Frontend',
+            title: 'Прошло 2 года с прошлых учебников, а $ так и не стоит 35',
+            bigText: 'А евро опять выше 70.'
+        },
+        {
+            id: 4,
+            author: 'Гость',
+            title: 'Бесплатно. Без смс, про реакт, заходи - https://maxpfrontend.ru',
+            bigText: 'Еще есть группа VK, telegram и канал на youtube! Вся инфа на сайте, не реклама!'
+        }
+    ];
+
+    class ListItem extends React.Component {
+        state = {
+            name: false // определили начальное состояние
+        }
+        handleClick = (e) => {
+            e.preventDefault();
+            console.log(11, e.currentTarget)
+            console.log(22, this)
+
+            // this.setState({visible: true})
+        }
+
+        render(){
+            const {title, id} = this.props.data;
+
+            return (
+                <li onClick={this.handleClick} className="item" data-href={"#lesson" + id } key={id}>{title}</li>
+            )
+        }
+    }
+    ListItem.propTypes = {
+        data: PropTypes.shape({
+            id: PropTypes.number.isRequired,
+            title: PropTypes.string.isRequired,
+        })
+    };
+
+    class List extends React.Component {
+        handleClick = (d) => {
+            return d;
+        }
+
+        renderNews = () => {
+            const {data} = this.props;
+            let newsTempalate = null;
+            if(data.length){ // если новость есть, пробегись мэпом
+                newsTempalate = data.map(function (item) {
+                    return <ListItem onclick={this.handleClick(item.id)} key={item.id} data={item} />
+                })
+            } else { // if новостей нет сохрани в переменную параграф
+                newsTempalate = <p> no new yet </p>
+            }
+            return newsTempalate;
+        };
+
+        render(){
+            const {data} = this.props; // аналоогично записи const data = this.props.data - деструкторизация объекта ES6 !!
+
+            return(
+                <ul className="list__wrapper">
+                    { this.renderNews() }
+                    <span className="showmore">show more</span>
+                </ul>
+            )
+        }
+    }
+
+
+
+    class LessonContent extends React.Component {
+        state = {
+            content: this.props.content,
+            allstate: this.props.allstate,
+            dataId: this.props.dataId
+        };
+
+        handleChooseContent = (e) => {
+
+        }
+
+        render(){
+            const choosenNews = this.state.dataId;
+            const {title, author, id, bigText} = this.state.content[choosenNews];
+
+            return (
+                <React.Fragment>
+                    <h3 className="content__title" id={id}>{title}</h3>
+                    <p>author: {author}</p>
+                    <p>id : {id}</p>
+                    <p className="capture">{bigText}</p>
+                </React.Fragment>
+            )
+        }
+    }
+
+
+    class App extends React.Component {
+        state = {
+            news: myNews,
+            choosenNews: 1
+        };
+
+        handleChooseLesson = (id) => {
+            let lessonId = id;
+            // this.setState({choosenNews: 2})
+            this.setState({choosenNews: lessonId})
+
+        }
+        // handleAddNews = (data) => {
+        //     console.log('я вызвана из АДД, но имею доступ к this.state from App' , this.state);
+        //     const nextNews = [data, ...this.state.news ];
+        //     this.setState({news: nextNews })
+        // };
+        render (){
+            return (
+                <div className="container">
+                    <aside id="aside">
+                        <List handleClick={this.handleChooseLesson} data={myNews}/>
+                    </aside>
+
+                    <div className="content">
+                        <LessonContent  allstate={this.state}  dataId={this.state.choosenNews} content={this.state.news}/>
+                    </div>
+                </div>
+            )
+        }
+    }
+
+    ReactDOM.render(
+        <App />,
+        document.querySelector('main')
+    );
+</script>
+
+</body>
+</html>

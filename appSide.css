@@ -1,0 +1,46 @@
+.none {
+    display: none;
+}
+body {
+    background: #222;
+    font-family: sans-serif;
+    color: #999;
+}
+p {
+    margin: 0 0 5px;
+}
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: block;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 100px 15px;
+}
+aside {
+    width: 280px;
+    display: flex;
+    box-sizing: content-box;
+    flex-shrink: 0;
+    padding: 0 10px;
+}
+aside ul {
+    width: 100%;
+}
+aside ul li {
+    width: 100%;
+    display: block;
+    padding: 10px 15px;
+    border-bottom: 2px solid #999;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+aside ul li:hover {
+    border-bottom: 2px solid lightgreen;
+}
+
+.content {
+    padding: 20px;
+
+}
